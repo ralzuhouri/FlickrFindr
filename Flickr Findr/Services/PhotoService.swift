@@ -46,10 +46,6 @@ class PhotoService: PhotoServiceProtocol {
                     case .success(let data):
                         do {
                             let decoder = JSONDecoder()
-                            
-                            let json = String(data: data, encoding: .utf8)
-                            print(json)
-                            
                             let response = try decoder.decode(Response.self, from: data)
                             continuation.resume(returning: response.photos.photo)
                         } catch {
