@@ -12,4 +12,11 @@ struct Photo: PhotoProtocol, Codable {
     var secret: String
     var server: String
     var title: String
+    
+    static var mock: Photo {
+        return Photo(id: "52689697392",
+                     secret: "0399bcdc4c",
+                     server: "65535",
+                     title: "Miniature painter on ladder and Happy Easter text")
+    }
 }

@@ -57,4 +57,8 @@ class PhotoService: PhotoServiceProtocol {
                 }
         }
     }
+    
+    func fetchPhotoData(_ photo: PhotoProtocol) async throws -> Data {
+        return Data()
+    }
 }
