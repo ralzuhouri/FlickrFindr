@@ -8,17 +8,48 @@
 import SwiftUI
 
 struct PhotoThumbnailView: View {
-    let photo: PhotoProtocol
+    private enum State {
+        case loading, loaded, error(Error)
+    }
+    
+    @StateObject var viewModel: PhotoThumbnailViewModel
+    private let photo: PhotoProtocol
+    
+    init(photoService: PhotoServiceProtocol, photo: PhotoProtocol) {
+        _viewModel = StateObject(wrappedValue: PhotoThumbnailViewModel(photoService: photoService, photo: photo))
+        self.photo = photo
+    }
     
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        HStack {
+            Text(photo.title)
+            
+            Spacer()
+            
+            switch viewModel.state {
+            case .loading:
+                ProgressView()
+            case .loaded(let image):
+                Image(uiImage: image)
+            case .error(let error):
+                Text(error.localizedDescription)
+                    .foregroundColor(.red)
+            }
+        }
+        .frame(height: 150)
+        .onAppear {
+            Task {
+                try await viewModel.fetchThumbnail()
+            }
+        }
     }
 }
 
 struct PhotoThumbnailView_Previews: PreviewProvider {
-    static let photo = Photo.mock
+    static let photo: PhotoProtocol = Photo.mock
+    static let photoService: PhotoServiceProtocol = PhotoServiceMock()
     
     static var previews: some View {
-        PhotoThumbnailView(photo: photo)
+        PhotoThumbnailView(photoService: photoService, photo: photo)
     }
 }

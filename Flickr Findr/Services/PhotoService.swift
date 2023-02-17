@@ -29,6 +29,14 @@ class PhotoService: PhotoServiceProtocol {
         return url
     }
     
+    private var photoBaseUrl: URL {
+        guard let url = URL(string: "https://live.staticflickr.com") else {
+            fatalError("Could not find photo base URL")
+        }
+        
+        return url
+    }
+    
     func searchPhotos(text: String) async throws -> [PhotoProtocol] {
         return try await withCheckedThrowingContinuation { continuation in
             let parameters: [String: Any] = [
@@ -58,7 +66,13 @@ class PhotoService: PhotoServiceProtocol {
         }
     }
     
-    func fetchPhotoData(_ photo: PhotoProtocol) async throws -> Data {
-        return Data()
+    func fetchPhotoThumbnailData(_ photo: PhotoProtocol) async throws -> Data {
+        let url = photoBaseUrl
+            .appending(path: photo.server)
+            .appending(path: "\(photo.id)_\(photo.secret)_q.jpg")
+        
+        print(url)
+        
+        return try Data(contentsOf: url)
     }
 }

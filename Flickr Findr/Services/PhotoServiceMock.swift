@@ -25,7 +25,7 @@ class PhotoServiceMock: PhotoServiceProtocol {
         return photos
     }
     
-    func fetchPhotoData(_ photo: PhotoProtocol) async throws -> Data {
+    func fetchPhotoThumbnailData(_ photo: PhotoProtocol) async throws -> Data {
         let image = UIImage(named: "Thumbnail")
         
         guard let data = image?.jpegData(compressionQuality: 1.0) else {

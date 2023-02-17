@@ -9,13 +9,12 @@ import SwiftUI
 
 class PhotoSearchViewModel: ObservableObject {
     enum State {
-        case notStarted, loading, loaded, error(Error)
+        case notStarted, loading, loaded([PhotoProtocol]), error(Error)
     }
     
     @Published var state: State = .notStarted
-    @Published var photos: [PhotoProtocol] = []
     
-    private var photoService: PhotoServiceProtocol
+    private let photoService: PhotoServiceProtocol
     
     init(photoService: PhotoServiceProtocol) {
         self.photoService = photoService
@@ -23,10 +22,15 @@ class PhotoSearchViewModel: ObservableObject {
     
     @MainActor @discardableResult
     func searchPhotos(searchTerm: String) async throws -> [PhotoProtocol] {
+        guard searchTerm != "" else {
+            state = .notStarted
+            return []
+        }
+        
         do {
             state = .loading
-            photos = try await photoService.searchPhotos(text: searchTerm)
-            state = .loaded
+            let photos = try await photoService.searchPhotos(text: searchTerm)
+            state = .loaded(photos)
             return photos
         } catch {
             state = .error(error)
