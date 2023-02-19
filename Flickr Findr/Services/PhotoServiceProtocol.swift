@@ -10,4 +10,5 @@ import Foundation
 protocol PhotoServiceProtocol {
     func searchPhotos(text: String) async throws -> [PhotoProtocol]
     func fetchPhotoThumbnailData(_ photo: PhotoProtocol) async throws -> Data
+    func fetchOriginalPhotoData(_ photo: PhotoProtocol) async throws -> Data
 }

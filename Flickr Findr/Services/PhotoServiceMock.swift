@@ -34,4 +34,14 @@ class PhotoServiceMock: PhotoServiceProtocol {
         
         return data
     }
+    
+    func fetchOriginalPhotoData(_ photo: PhotoProtocol) async throws -> Data {
+        let image = UIImage(named: "Original")
+        
+        guard let data = image?.jpegData(compressionQuality: 1.0) else {
+            throw Error.encodingError
+        }
+        
+        return data
+    }
 }

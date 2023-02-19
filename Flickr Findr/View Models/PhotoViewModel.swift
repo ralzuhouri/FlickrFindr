@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-class PhotoThumbnailViewModel: ObservableObject {
+class PhotoViewModel: ObservableObject {
     enum State {
         case loading, loaded(UIImage), error(Error)
     }
@@ -31,6 +31,23 @@ class PhotoThumbnailViewModel: ObservableObject {
         do {
             let data = try await photoService.fetchPhotoThumbnailData(photo)
             
+            
+            guard let image = UIImage(data: data) else {
+                throw FetchError.failedToDecodeData
+            }
+            
+            state = .loaded(image)
+            return image
+        } catch {
+            state = .error(error)
+            throw error
+        }
+    }
+    
+    @MainActor @discardableResult
+    func fetchOriginal() async throws -> UIImage {
+        do {
+            let data = try await photoService.fetchOriginalPhotoData(photo)
             
             guard let image = UIImage(data: data) else {
                 throw FetchError.failedToDecodeData

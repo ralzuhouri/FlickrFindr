@@ -12,11 +12,11 @@ struct PhotoThumbnailView: View {
         case loading, loaded, error(Error)
     }
     
-    @StateObject var viewModel: PhotoThumbnailViewModel
+    @StateObject var viewModel: PhotoViewModel
     private let photo: PhotoProtocol
     
     init(photoService: PhotoServiceProtocol, photo: PhotoProtocol) {
-        _viewModel = StateObject(wrappedValue: PhotoThumbnailViewModel(photoService: photoService, photo: photo))
+        _viewModel = StateObject(wrappedValue: PhotoViewModel(photoService: photoService, photo: photo))
         self.photo = photo
     }
     
