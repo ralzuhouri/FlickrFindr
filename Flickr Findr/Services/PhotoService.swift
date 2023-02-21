@@ -38,7 +38,7 @@ class PhotoService {
 
 // MARK: - PhotoServiceProtocol
 extension PhotoService: PhotoServiceProtocol {
-    func searchPhotos(text: String) async throws -> [PhotoProtocol] {
+    func searchPhotos(text: String, limit: Int) async throws -> [PhotoProtocol] {
         struct Response: Codable {
             struct Photos: Codable {
                 var photo: [Photo]
@@ -64,7 +64,8 @@ extension PhotoService: PhotoServiceProtocol {
                         do {
                             let decoder = JSONDecoder()
                             let response = try decoder.decode(Response.self, from: data)
-                            continuation.resume(returning: response.photos.photo)
+                            let photos = Array(response.photos.photo[0..<limit])
+                            continuation.resume(returning: photos)
                         } catch {
                             continuation.resume(throwing: error)
                         }
@@ -119,6 +120,8 @@ extension PhotoService {
                     switch response.result {
                     case .success(let data):
                         do {
+                            
+                            
                             let decoder = JSONDecoder()
                             let response = try decoder.decode(Response.self, from: data)
                             

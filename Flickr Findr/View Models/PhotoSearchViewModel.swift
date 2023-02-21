@@ -29,7 +29,7 @@ class PhotoSearchViewModel: ObservableObject {
         
         do {
             state = .loading
-            let photos = try await photoService.searchPhotos(text: searchTerm)
+            let photos = try await photoService.searchPhotos(text: searchTerm, limit: 25)
             state = .loaded(photos)
             return photos
         } catch {
