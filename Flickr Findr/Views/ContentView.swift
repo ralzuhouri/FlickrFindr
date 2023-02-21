@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct ContentView: View {
+    @StateObject var navigationState = NavigationState()
+    
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $navigationState.selectedPhotos) {
             PhotoSearchView(photoService: PhotoService())
+                .environmentObject(navigationState)
         }
         .padding()
     }

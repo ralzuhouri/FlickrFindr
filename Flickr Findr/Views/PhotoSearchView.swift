@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct PhotoSearchView: View {
+    @EnvironmentObject var navigationState: NavigationState
     @StateObject private var viewModel: PhotoSearchViewModel
     @State private var searchTerm: String = ""
-    @State private var isShowingDetail: Bool = false
-    @State private var selectedPhoto: PhotoProtocol?
     
     private let photoService: PhotoServiceProtocol
     
@@ -32,8 +31,12 @@ struct PhotoSearchView: View {
                     ForEach(photos, id: \.id) { photo in
                         PhotoThumbnailView(photoService: photoService, photo: photo)
                             .onTapGesture {
-                                isShowingDetail = true
-                                selectedPhoto = photo
+                                guard let photo = photo as? Photo else {
+                                    assertionFailure("Could not downcast to Photo")
+                                    return
+                                }
+                                
+                                navigationState.selectedPhotos = [ photo ]
                             }
                     }
                 }
@@ -42,10 +45,10 @@ struct PhotoSearchView: View {
                     .foregroundColor(.red)
             }
         }
-        .fullScreenCover(isPresented: $isShowingDetail) { [selectedPhoto] in
-            PhotoOriginalView(photoService: photoService, photo: selectedPhoto!)
-        }
         .searchable(text: $searchTerm, prompt: "Search Photos")
+        .navigationDestination(for: Photo.self) { photo in
+            PhotoOriginalView(photoService: photoService, photo: photo)
+        }
         .onChange(of: searchTerm) { _ in
             Task {
                 try await viewModel.searchPhotos(searchTerm: searchTerm)

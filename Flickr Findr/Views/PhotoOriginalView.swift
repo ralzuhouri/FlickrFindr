@@ -24,18 +24,22 @@ struct PhotoOriginalView: View {
         GeometryReader { geometry in
             VStack {
                 Text(photo.title)
+                    .padding()
                 
                 switch viewModel.state {
                 case .loading:
                     ProgressView()
+                        .padding()
                 case .loaded(let image):
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: geometry.size.width, maxHeight: geometry.size.height)
+                        .padding()
                 case .error(let error):
                     Text(error.localizedDescription)
                         .foregroundColor(.red)
+                        .padding()
                 }
             }
         }

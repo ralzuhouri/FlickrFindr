@@ -20,3 +20,6 @@ struct Photo: PhotoProtocol, Codable {
                      title: "Miniature painter on ladder and Happy Easter text")
     }
 }
+
+extension Photo: Hashable, Equatable, Identifiable {
+}
