@@ -22,6 +22,7 @@ class PhotoServiceMock: PhotoServiceProtocol {
         let jsonData = try Data(contentsOf: photosJsonUrl)
         let decoder = JSONDecoder()
         let photos = try decoder.decode([Photo].self, from: jsonData)
+        let limit = max(limit, response.photos.photo.count)
         return Array(photos[0..<limit])
     }
     
