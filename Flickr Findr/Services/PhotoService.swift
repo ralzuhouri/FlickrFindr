@@ -121,9 +121,6 @@ extension PhotoService {
                     switch response.result {
                     case .success(let data):
                         do {
-                            let json = String(data: data, encoding: .utf8)
-                            print(json)
-                            
                             let decoder = JSONDecoder()
                             let response = try decoder.decode(Response.self, from: data)
                             
