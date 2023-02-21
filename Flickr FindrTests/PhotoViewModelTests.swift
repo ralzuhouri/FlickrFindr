@@ -9,19 +9,19 @@ import XCTest
 @testable import Flickr_Findr
 
 final class PhotoViewModelTests: XCTestCase {
-    let thumbnailSize = CGSize(width: 150, height: 150)
-    let originalSize = CGSize(width: 4968, height: 2551)
+    let thumbnailSize = 100.0
+    let originalSize = CGSize(width: 6720, height: 4200)
     
     func testFetchMockThumbnailPhoto() async throws {
         let sut = PhotoViewModel(photoService: PhotoServiceMock(), photo: Photo.mock)
         let photo = try await sut.fetchThumbnail()
-        XCTAssertEqual(photo.size, thumbnailSize)
+        XCTAssertEqual(max(photo.size.width, photo.size.height), thumbnailSize)
     }
     
     func testFetchThumbnailPhotoFromApi() async throws {
         let sut = PhotoViewModel(photoService: PhotoService(), photo: Photo.mock)
         let photo = try await sut.fetchThumbnail()
-        XCTAssertEqual(photo.size, thumbnailSize)
+        XCTAssertEqual(max(photo.size.width, photo.size.height), thumbnailSize)
     }
     
     func testFetchMockOriginalPhoto() async throws {

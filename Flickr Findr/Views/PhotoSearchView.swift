@@ -8,8 +8,10 @@
 import SwiftUI
 
 struct PhotoSearchView: View {
-    @StateObject var viewModel: PhotoSearchViewModel
+    @StateObject private var viewModel: PhotoSearchViewModel
     @State private var searchTerm: String = ""
+    @State private var isShowingDetail: Bool = false
+    @State private var selectedPhoto: PhotoProtocol?
     
     private let photoService: PhotoServiceProtocol
     
@@ -29,12 +31,19 @@ struct PhotoSearchView: View {
                 LazyVStack {
                     ForEach(photos, id: \.id) { photo in
                         PhotoThumbnailView(photoService: photoService, photo: photo)
+                            .onTapGesture {
+                                isShowingDetail = true
+                                selectedPhoto = photo
+                            }
                     }
                 }
             case .error(let error):
                 Text(error.localizedDescription)
                     .foregroundColor(.red)
             }
+        }
+        .fullScreenCover(isPresented: $isShowingDetail) { [selectedPhoto] in
+            PhotoOriginalView(photoService: photoService, photo: selectedPhoto!)
         }
         .searchable(text: $searchTerm, prompt: "Search Photos")
         .onChange(of: searchTerm) { _ in

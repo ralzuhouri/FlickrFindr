@@ -78,7 +78,7 @@ extension PhotoService: PhotoServiceProtocol {
     func fetchPhotoThumbnailData(_ photo: PhotoProtocol) async throws -> Data {
         let url = photoBaseUrl
             .appending(path: photo.server)
-            .appending(path: "\(photo.id)_\(photo.secret)_q.jpg")
+            .appending(path: "\(photo.id)_\(photo.secret)_t.jpg")
         
         return try Data(contentsOf: url)
     }
@@ -86,7 +86,7 @@ extension PhotoService: PhotoServiceProtocol {
     func fetchOriginalPhotoData(_ photo: PhotoProtocol) async throws -> Data {
         let originalSize = try await fetchOriginalPhotoSize(photo)
         
-        guard let url = URL(string: originalSize.url) else {
+        guard let url = URL(string: originalSize.source) else {
             throw PhotoServiceError.originalSizeUrlNotFound
         }
         
@@ -110,7 +110,8 @@ extension PhotoService {
                 "method": "flickr.photos.getSizes",
                 "api_key": apiKey,
                 "format": "json",
-                "photo_id": photo.id
+                "photo_id": photo.id,
+                "nojsoncallback": 1
             ]
             
             AF.request(baseUrl, method: .get, parameters: parameters)

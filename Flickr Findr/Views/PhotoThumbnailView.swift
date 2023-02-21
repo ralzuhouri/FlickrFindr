@@ -12,7 +12,7 @@ struct PhotoThumbnailView: View {
         case loading, loaded, error(Error)
     }
     
-    @StateObject var viewModel: PhotoViewModel
+    @StateObject private var viewModel: PhotoViewModel
     private let photo: PhotoProtocol
     
     init(photoService: PhotoServiceProtocol, photo: PhotoProtocol) {
@@ -31,12 +31,14 @@ struct PhotoThumbnailView: View {
                 ProgressView()
             case .loaded(let image):
                 Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
             case .error(let error):
                 Text(error.localizedDescription)
                     .foregroundColor(.red)
             }
         }
-        .frame(height: 150)
+        .frame(height: 100)
         .onAppear {
             Task {
                 try await viewModel.fetchThumbnail()

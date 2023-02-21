@@ -12,7 +12,7 @@ struct PhotoOriginalView: View {
         case loading, loaded, error(Error)
     }
     
-    @StateObject var viewModel: PhotoViewModel
+    @StateObject private var viewModel: PhotoViewModel
     private let photo: PhotoProtocol
     
     init(photoService: PhotoServiceProtocol, photo: PhotoProtocol) {
@@ -24,8 +24,6 @@ struct PhotoOriginalView: View {
         GeometryReader { geometry in
             VStack {
                 Text(photo.title)
-                
-                Spacer()
                 
                 switch viewModel.state {
                 case .loading:
@@ -41,7 +39,6 @@ struct PhotoOriginalView: View {
                 }
             }
         }
-        .frame(height: 150)
         .onAppear {
             Task {
                 try await viewModel.fetchOriginal()
