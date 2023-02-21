@@ -64,7 +64,7 @@ extension PhotoService: PhotoServiceProtocol {
                         do {
                             let decoder = JSONDecoder()
                             let response = try decoder.decode(Response.self, from: data)
-                            let limit = max(limit, response.photos.photo.count)
+                            let limit = min(limit, response.photos.photo.count)
                             let photos = Array(response.photos.photo[0..<limit])
                             continuation.resume(returning: photos)
                         } catch {
